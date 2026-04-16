@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nutrition Planning Studio</title>
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <div class="backdrop-orb orb-a"></div>
+  <div class="backdrop-orb orb-b"></div>
+
+  <main class="app-shell">
+    <header class="hero reveal">
+      <p class="eyebrow">Nutrition Planning Studio</p>
+      <h1>Smart meal planning with live portion balancing</h1>
+      <p class="subtitle">
+        Enter your profile, choose foods you like, and get meals that stay within your daily target.
+        Edit any ingredient gram value and the rest auto-adjust.
+      </p>
+    </header>
+
+    <section class="panel reveal">
+      <div class="panel-head">
+        <h2>1. Your profile</h2>
+      </div>
+      <form id="profile-form" class="form-grid">
+        <label>
+          Height (cm)
+          <input id="height-cm" type="number" min="100" max="250" step="0.1" value="175" required>
+        </label>
+        <label>
+          Weight (kg)
+          <input id="weight-kg" type="number" min="30" max="300" step="0.1" value="75" required>
+        </label>
+        <label>
+          Workout level
+          <select id="workout-level" required></select>
+        </label>
+        <button class="btn btn-primary" type="submit" id="generate-plan-btn">Generate with LLM</button>
+      </form>
+      <p class="hint" id="llm-hint">Suggested flow: profile -> enter your ingredients -> generate with LLM -> fine-tune grams -> log meals.</p>
+      <p id="plan-status" class="status"></p>
+    </section>
+
+    <section class="panel reveal">
+      <div class="panel-head">
+        <h2>2. Ingredients you have</h2>
+      </div>
+      <div class="ingredient-input-grid">
+        <label class="ingredient-box">
+          Breakfast ingredients
+          <textarea id="ingredients-breakfast" placeholder="oats, banana, greek yogurt">oats, banana, greek yogurt</textarea>
+        </label>
+        <label class="ingredient-box">
+          Lunch ingredients
+          <textarea id="ingredients-lunch" placeholder="chicken breast, rice, broccoli">chicken breast, rice, broccoli</textarea>
+        </label>
+        <label class="ingredient-box">
+          Dinner ingredients
+          <textarea id="ingredients-dinner" placeholder="salmon, sweet potato, spinach">salmon, sweet potato, spinach</textarea>
+        </label>
+      </div>
+      <label class="notes-box">
+        Extra preferences (optional)
+        <input id="extra-preferences" type="text" placeholder="example: vegetarian lunch, low sugar dinner">
+      </label>
+    </section>
+
+    <section class="panel reveal">
+      <div class="panel-head">
+        <h2>3. Generated plan</h2>
+        <span id="within-limits-badge" class="badge neutral">No plan yet</span>
+      </div>
+      <div id="targets-grid" class="metrics-grid">
+        <p class="muted-empty">Generate a plan to view your target calories and macros.</p>
+      </div>
+      <div id="progress-grid" class="progress-grid"></div>
+      <div id="meal-plan-grid" class="meal-grid"></div>
+    </section>
+
+    <section class="panel reveal">
+      <div class="panel-head">
+        <h2>4. Daily log and report</h2>
+      </div>
+      <div class="toolbar">
+        <label class="date-label">
+          Log date
+          <input id="log-date" type="date">
+        </label>
+        <button id="log-selected-btn" class="btn btn-secondary" type="button">Log selected meals</button>
+        <button id="generate-report-btn" class="btn btn-primary" type="button">Generate report</button>
+      </div>
+      <div id="log-meal-selector" class="meal-toggle-grid"></div>
+      <p id="log-status" class="status"></p>
+      <article id="report-card" class="report-card">
+        <p class="muted-empty">Log meals and generate a report to see goals met/unmet and improvements.</p>
+      </article>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

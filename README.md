@@ -1,51 +1,52 @@
-# Nutrition Planning App (Starter)
+# Nutrition Planning App
 
-This repo now includes a starter implementation for the app you described:
+A local web app for nutrition planning with an LLM-generated meal plan, live quantity balancing, and daily progress reporting.
 
-- Enter **height, weight, workout level**.
-- Define preferred meals for **breakfast/lunch/dinner**.
-- Generate daily targets and meal quantities.
-- If one ingredient changes (e.g., oats 100g -> 120g), rebalance other ingredients to keep totals within limits.
-- Log meals daily and generate a report of goals met/unmet plus improvement tips.
+## What it does
 
-## Core module
+- Captures profile inputs: **height, weight, workout level**
+- Lets you type the ingredients you currently have for **breakfast, lunch, dinner**
+- Calls a backend LLM to generate ingredient quantities that target your daily calories and macros
+- Supports live ingredient edits:
+  - Example: change oats from 100g to 120g
+  - Other ingredients in that meal auto-adjust to keep the meal and daily totals in-range
+- Logs meals by date
+- Builds a daily report showing:
+  - goals met/unmet
+  - completion score
+  - improvement suggestions
 
-`nutrition_planner.py` provides:
+## Project structure
 
-- `NutritionPlanner`: computes calorie and macro targets.
-- `Meal.rebalance_ingredient(...)`: adjusts one item and proportionally rebalances others while preserving meal calories.
-- `MealLogger`: JSONL meal logging and retrieval by date.
-- `build_daily_report(...)`: compares actual intake with targets and flags goals met/unmet.
+- `nutrition_planner.py`: nutrition logic, plan generation, rebalancing, reporting
+- `llm_planner.py`: backend LLM prompt + response parsing for ingredient quantity generation
+- `app_server.py`: local API + static web server
+- `web/index.html`: app shell
+- `web/app.css`: modern responsive UI styling
+- `web/app.js`: frontend state + API integration
+- `tests/`: unit tests
 
-## Quick example
+## Configure LLM
 
-```python
-from datetime import date
-from nutrition_planner import Ingredient, Meal, NutritionPlanner, UserProfile, MealLogger, build_daily_report
+Set your API key before starting the server:
 
-breakfast = Meal(
-    "breakfast",
-    [
-        Ingredient("oats", 100, 3.89, protein_per_g=0.17, carbs_per_g=0.66, fats_per_g=0.07),
-        Ingredient("banana", 50, 0.89, protein_per_g=0.01, carbs_per_g=0.23),
-        Ingredient("milk", 250, 0.64, protein_per_g=0.03, carbs_per_g=0.05, fats_per_g=0.03),
-    ],
-)
-
-# Increase oats and auto-rebalance the rest.
-adjusted_breakfast = breakfast.rebalance_ingredient("oats", 120)
-
-planner = NutritionPlanner(
-    UserProfile(height_cm=175, weight_kg=75, workout_level="moderate"),
-    {"breakfast": adjusted_breakfast},
-)
-targets = planner.daily_targets()
-
-logger = MealLogger("meal_logs.jsonl")
-logger.log_meal(date.today(), "breakfast", adjusted_breakfast)
-report = build_daily_report(targets, logger.meals_for_date(date.today()))
-print(report)
+```powershell
+$env:OPENAI_API_KEY="your_api_key_here"
 ```
+
+Optional model override:
+
+```powershell
+$env:OPENAI_MODEL="gpt-4.1-mini"
+```
+
+## Run the app
+
+```bash
+python app_server.py --port 8000
+```
+
+Then open: `http://127.0.0.1:8000`
 
 ## Run tests
 
